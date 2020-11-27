@@ -16,6 +16,8 @@ $retorno = array('exito' => false, 'msg' => 'Error en la carga');
 
 switch ($metodo) {
     case 'GET':
+            header('Location: /clientes');
+            die;
         break;
     case 'POST':
         try {
