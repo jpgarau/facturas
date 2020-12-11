@@ -3,9 +3,11 @@
 namespace modelo\Cliente;
 
 use modelo\Conexion\Conexion;
+use modelo\ConexionWeb\ConexionWeb;
 use mysqli_driver;
 
 require_once 'Conexion.php';
+require_once 'ConexionWeb.php';
 
 class Cliente
 {
@@ -87,6 +89,32 @@ class Cliente
                     }else{
                         $arr = array('exito'=>false, 'msg' => "No encontrado",'encontrado'=>$encontrado);
                     }
+                }
+            }
+        } catch (\Exception $e) {
+            $arr['msg'] = $e->getMessage();
+        }
+        return $arr;
+    }
+    function listarServicios(){
+        $arr = array('exito'=>false, 'msg'=>'Error al listar los servicios');
+        try {
+            $nro_doc = $this->__get('num_doc');
+            $sql = 'SELECT servicios.idservicio FROM servicios RIGHT JOIN detservicios ON servicios.idservicio = detservicios.idservicio LEFT JOIN clientes ON detservicios.idcliente = clientes.idcliente WHERE replace(clientes.cuit,"-","") = ? or clientes.nrodoc = ? order by servicios.idservicio';
+            $mysqli = ConexionWeb::abrir();
+            $stmt = $mysqli->prepare($sql);
+            if($stmt !== FALSE){
+                $stmt->bind_param('ss', $nro_doc, $nro_doc);
+                $stmt->execute();
+                $rs = $stmt->get_result();
+                $encontrados = $rs->num_rows;
+                $stmt->close();
+                $mysqli->close();
+                if($encontrados>0){
+                    $servicios = $rs->fetch_all(MYSQLI_ASSOC);
+                    $arr = array('exito'=>true, 'msg'=>'', 'encontrados'=>$encontrados, $servicios);
+                }else{
+                    $arr = array('exito'=>true, 'msg'=>'', 'encontrados'=>$encontrados);
                 }
             }
         } catch (\Exception $e) {

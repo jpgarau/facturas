@@ -1,14 +1,28 @@
 <?php
 
-use modelo\Comprobante\Comprobante;
+use modelo\ConexionWeb\ConexionWeb;
 
-require_once 'modelo/Comprobante.php';
-
-$oComprobante = new Comprobante();
-
-$retorno = $oComprobante->realizarMantenimiento();
+include_once "modelo/ConexionWeb.php";
+try {
+    $mysqli = ConexionWeb::abrir();
+    $sql = 'SELECT servicios.idservicio FROM servicios RIGHT JOIN detservicios ON servicios.idservicio = detservicios.idservicio LEFT JOIN clientes ON detservicios.idcliente = clientes.idcliente WHERE replace(clientes.cuit,"-","") = 30707940081 or clientes.nrodoc = 30707940081 order by servicios.idservicio';
+    $stmt = $mysqli->prepare($sql);
+    $rs = $stmt;
+    if($stmt!==FALSE){
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $rs = $res->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+        $mysqli->close();
+    }
+        
+} catch (\exception $e) {
+    $rs = $e->getMessage();
+}
 
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,7 +32,7 @@ $retorno = $oComprobante->realizarMantenimiento();
 </head>
 <body>
     <pre>
-        <?php var_dump($retorno); ?>
+        <?php var_dump($rs);?>
     </pre>
 </body>
 </html>

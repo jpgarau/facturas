@@ -10,7 +10,12 @@ body, html{
     scroll-behavior: smooth;
     line-height: 1em;
 }
-
+hr{
+    margin: 0;
+    padding: 0;
+    height: 1px;
+    /* background-color: rgba(229, 255, 0, 0.781); */
+}
 .login{
     background-image: url('../img/login.jpg');
     height:100vh;
@@ -19,7 +24,15 @@ body, html{
     background-size: cover;    
 }
 
-#servicios, #comprobantes{
+.titulo{
+    text-transform: uppercase;
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    text-shadow: 0 0 8px #111;
+}
+
+#servicios, #comprobantes, #presupuestos{
     padding: 60px 0;
     height:100vh;
     background-position: center;
@@ -29,27 +42,93 @@ body, html{
 #servicios{
     background-image: url('../img/fondoservicios2.jpg'); 
 }
-#servicios .container div{
-    padding: 20px;
-    background-color: rgba(255,255,255,0.8);
-}
-#servicios p{
-    font-weight: 700;
-    color: #111;
+#presupuestos{
+    background-image: url('../img/presupuestos2.jpg'); 
 }
 
+#listaservicios{
+    width: 100%;
+    flex-direction: column;
+    flex-flow: row;
+    flex-wrap: wrap;
+    height: 100%;
+}
+.servicio{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #B938CB #080808 #080808 #B938CB;
+    margin: 10px 0;
+    background: #080808;
+    background: -webkit-linear-gradient(bottom right, #080808, #B938CB);
+    background: -moz-linear-gradient(bottom right, #080808, #B938CB);
+    background: linear-gradient(to top left, #080808, #B938CB);
+    box-shadow: 0 5px 10px rgba(100,0,255,0.9);
+    opacity: 0.95;
+    color: #fff;
+    font-weight: 600;
+    border-radius: 5px;
+    transition: all ease-in-out 0.5s;
+    padding: 5px;
+}
+@media only screen and (min-width: 768px){
+    .servicio{
+        border-width: 1px;
+        border-style: solid;
+        border-color: #B938CB #080808 #080808 #B938CB;
+        font-size: 1.2rem;
+        letter-spacing: 1px;
+        line-height: 1.2rem;
+        /* display: flex;
+        justify-content: center;
+        align-items: center; */
+        /* background: #080808;
+        background: -webkit-linear-gradient(bottom right, #080808, #B938CB);
+        background: -moz-linear-gradient(bottom right, #080808, #B938CB);
+        background: linear-gradient(to top left, #080808, #B938CB); */
+        /* font-weight: 600; */
+        /* color: #fff; */
+        padding: 25px;
+        margin: 10px;
+        width: 45%;
+        border-radius: 10px;
+        box-shadow: 0 5px 20px rgba(100,0,255,0.9);
+        /* opacity: 0.95; */
+        /* transition: all ease-in-out 0.5s; */
+    }
+}
+.servicio:hover{
+    background: #080808;
+    background: -webkit-linear-gradient(bottom right, #B938CB, #080808);
+    background: -moz-linear-gradient(bottom right, #B938CB, #080808);
+    background: linear-gradient(to top left, #B938CB, #080808);
+    transform: scale(105%);
+    transition: all ease-in-out 0.5s;
+}
+.servicio p{
+    margin: 0;
+}
+.servicio p i{
+    color: #000;
+    background-color: rgb(255, 0, 0);
+    border-radius: 50%;
+    text-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
+}
+.servicio p i.activo{
+    color: #000;
+    background-color: rgb(0, 255, 0);
+    border-radius: 50%;
+    text-shadow: 0 0 15px rgba(0, 255, 0, 0.8);
+}
 #comprobantes{
     background-image: url('../img/fondo7.jpg');
 }
-#comprobantes .container h2{
-    text-transform: uppercase;
-    color: #fff;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 700;
-    text-shadow: 0 0 8px #111;
-}
+
 @media only screen and (min-width: 768px){
-    #comprobantes .container h2{
+    .titulo{
         letter-spacing: 0.4rem;
     }   
 }

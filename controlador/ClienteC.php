@@ -35,4 +35,16 @@ class ClienteC{
         }
         return $arr;
     }
+    public function listarServicios($num_doc){
+        $arr = array('exito'=>false, 'msg'=>'Error al listar');
+        try {
+            $cliente = new Cliente();
+            $cliente->__set('num_doc', $num_doc);
+            $retorno = $cliente->listarServicios();
+            $arr = $retorno;
+        } catch (\Exception $e) {
+            $arr['msg'] = $e->getMessage();
+        }
+        return $arr;
+    }
 }

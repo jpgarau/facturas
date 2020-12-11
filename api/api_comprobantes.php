@@ -12,12 +12,12 @@ header('Content-Type: application/json; charset=UTF-8');
 
 $metodo = $_SERVER['REQUEST_METHOD'];
 
-$retorno = array('exito' => false, 'msg' => 'Error en la carga');
+$retorno = array('exito' => false, 'msg' => 'Error en la carga', 'metodo' => $metodo);
 
 switch ($metodo) {
     case 'GET':
-            header('Location: /clientes');
-            die;
+        header('Location: /facturas');
+        die;
         break;
     case 'POST':
         try {
@@ -43,9 +43,9 @@ switch ($metodo) {
             $datos = json_decode($_POST['data'], true);
             $tipo_comp      = $datos['tipo_comp'];
             $comprobante    = $datos['comprobante'];
-            $fecha          = preg_replace('/([0-9]{2})\/([0-9]{2})\/([0-9]{4})/', '$3-$2-$1',$datos['fecha']);
+            $fecha          = preg_replace('/([0-9]{2})\/([0-9]{2})\/([0-9]{4})/', '$3-$2-$1', $datos['fecha']);
             $id_fact_venta  = $datos['id_fact_venta'];
-            $num_doc        = filter_var(str_replace('-','',$datos['num_doc']), FILTER_VALIDATE_INT);
+            $num_doc        = filter_var(str_replace('-', '', $datos['num_doc']), FILTER_VALIDATE_INT);
             $correos        = explode(';', $datos['email']);
             $correo         = filter_var(trim($correos[0]), FILTER_VALIDATE_EMAIL);
             $importe        = $datos['importe'];
@@ -54,9 +54,9 @@ switch ($metodo) {
 
             $clienteC = new ClienteC();
             $res = $clienteC->buscarCliente($num_doc);
-            if($res['exito']!==true){
+            if ($res['exito'] !== true) {
                 $res = $clienteC->agregarCliente($num_doc, $correo);
-                if($res['exito']!==true){
+                if ($res['exito'] !== true) {
                     throw new Exception($res['msg']);
                 }
             }
@@ -67,21 +67,38 @@ switch ($metodo) {
                 $retorno = guardarPdf();
                 if ($retorno['exito']) {
                     $retorno = array('exito' => true, 'msg' => 'Subido con exito');
-                }else{
+                } else {
                     throw new Exception($retorno['msg']);
                 }
-            }else{
+            } else {
                 throw new Exception($retorno['msg']);
             }
         } catch (Exception $e) {
-            header('HTP/1.1 401');
+            header('HTTP/1.1 401');
             die(json_encode(array('exito' => false, 'msg' => $e->getMessage())));
         }
 
         break;
     case 'PUT':
-        break;
-    case 'DELETE':
+        $datosPUT = file_get_contents("php://input");
+        $datos = json_decode($datosPUT,true);
+        try {
+            if (!isset($datos) || count($datos)===0) {
+                throw new Exception('No se recibio la Data a procesar.');
+            }
+            $id_fact_venta  = $datos['id_fact_venta'];
+            $estado_fact    = $datos['estado_fact'];
+            $oComprobanteC = new ComprobantesC();
+            $retorno = $oComprobanteC->actualizarEstadoFact($id_fact_venta, $estado_fact);
+            if($retorno['exito']){
+                $retorno = array('exito' => true, 'msg' => 'Estado actualizado con exito');
+            }else{
+                throw new Exception($retorno['msg']);
+            }
+        } catch (Exception $e) {
+            header('HTTP/1.1 401');
+            die(json_encode(array('exito' => false, 'msg' => $e->getMessage())));
+        }
         break;
     default:
         header('HTTP/1.1 404');
@@ -105,18 +122,18 @@ function guardarPdf()
         $fileName     = $_FILES['file']['name'];
         $directorio = '../pdf/';
         $dest_path = $directorio . $fileName;
-        if(!is_file($dest_path)){
+        if (!is_file($dest_path)) {
             if (move_uploaded_file($fileTmpPath, $dest_path)) {
                 // $contenido = file_get_contents($dest_path);
                 // file_put_contents($dest_path, base64_decode($contenido));
                 $arr = array('exito' => true, 'msg' => 'Subido con exito');
-            }else{
+            } else {
                 $arr['msg'] = "Error al mover el archivo";
             }
-        }else{
+        } else {
             $arr['msg'] = "Error el archivo ya existe";
         }
-    }else{
+    } else {
         $arr['msg'] = $_FILES['file']['error'];
     }
     return $arr;

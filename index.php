@@ -1,12 +1,16 @@
 <?php
 
+use controlador\ClienteC\ClienteC;
 use controlador\ComprobantesC\ComprobantesC;
+use modelo\Cliente\Cliente;
 
 $dir = is_dir('modelo') ? '' : '../';
 
 require_once $dir . 'modelo/validar.php';
 require_once $dir . 'vista/header.php';
 require_once $dir . 'controlador/ComprobantesC.php';
+require_once $dir . 'controlador/ServicioC.php';
+require_once $dir . 'controlador/ClienteC.php';
 
 if (isset($_SESSION['usuario'])) {
 ?>
@@ -17,7 +21,10 @@ if (isset($_SESSION['usuario'])) {
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
+                <li class="nav-item"><a class="nav-link" href="#servicios">Servicios</a></li>
                 <li class="nav-item"><a class="nav-link" href="#comprobantes">Mis Comprobantes</a></li>
+                <li class="nav-item"><a class="nav-link" href="#presupuestos">Mis Presupuestos</a></li>
+                <!-- <li class="nav-item"><a class="nav-link" href="#ctacte">Mi Estado</a></li> -->
             </ul>
             <div class="d-flex h-100 justify-content-center align-items-center mx-2">
                 <p class="text-white p-0 m-0"><i class="fas fa-user"></i> <?php echo $_SESSION['usuario']; ?></p>
@@ -25,10 +32,42 @@ if (isset($_SESSION['usuario'])) {
             <a class="btn btn-warning my-2 my-sm-0" href="vista/logout.php"><i class="fas fa-door-open"></i> Salir</a>
         </div>
     </nav>
+    
+    <section id="servicios">
+        <div class="container">
+            <h2 class="text-center titulo">Servicios</h2>
+            <div id="listaservicios" class="d-flex justify-content-center align-items-center">
+                <?php
+                    $num_doc = $_SESSION['userProfile']['num_doc'];
+                    $clientec = new ClienteC();
+                    $retorno = $clientec->listarServicios($num_doc);
+                    $arrServicios = array();
+                    if($retorno['encontrados'] > 0){
+                        foreach ($retorno[0] as $servicioCliente) {
+                            $arrServicios[] = $servicioCliente['idservicio'];
+                        }
+                    }
 
+                    $servicioC = new ServicioC();
+                    $rs = $servicioC->listarServicios();
+                    if($rs['encontrados'] > 0){
+                        $servicios = $rs[0];
+                        foreach ($servicios as $servicio) {
+                            if(in_array($servicio['idservicio'], $arrServicios)){
+                                echo "<div class='servicio d-flex justify-content-between'><p>".$servicio['descripcion']."</p><p><i class='fas fa-check-circle fa-2x activo'></i></p></div>";
+                            }else{
+                                echo "<div class='servicio d-flex justify-content-between'><p>".$servicio['descripcion']."</p><p><i class='fas fa-times-circle fa-2x'></i></i></p></div>";
+                            }
+                        }
+                    }
+                ?>
+            </div>
+        </div>
+    </section>
+    <hr>
     <section id="comprobantes">
         <div class="container">
-            <h2 class="text-center">Mis Comprobantes</h2>
+            <h2 class="text-center titulo">Mis Comprobantes</h2>
             <div id="tbl_comprobantes" class="table-responsive">
                 <table class="table table-light table-hover table-sm text-center">
                     <thead class="d-fixed">
@@ -76,6 +115,29 @@ if (isset($_SESSION['usuario'])) {
             </div>
         </div>
     </section>
+    <hr>
+    <section id="presupuestos">
+      <div class="container">
+            <h2 class="text-center titulo">Mis Presupuestos</h2>
+            <div id="tbl_comprobantes" class="table-responsive">
+                <table class="table table-light table-hover table-sm text-center">
+                    <thead class="d-fixed">
+                        <th>Fecha</th>
+                        <th>Tipo</th>
+                        <th>Nº de Comprobante</th>
+                        <th>Importe</th>
+                        <th>Descargar</th>
+                        <th>Estado</th>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+    <!-- <section id="ctacte">
+
+    </section> -->
 <?php
     require_once 'vista/footer.php';
 }

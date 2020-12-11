@@ -198,7 +198,8 @@ class Comprobante
             if ($stmt !== FALSE) {
                 $stmt->bind_param('ii', $estado_fact, $id_fact_venta);
                 $stmt->execute();
-                $rs = $stmt->num_rows;
+                $rs = $mysqli->info;
+                $rs = explode(' ',$rs)[2];
                 $stmt->close();
                 $mysqli->close();
                 if ($rs > 0) {
