@@ -102,7 +102,7 @@ class Comprobante
         $arr = array('exito' => false, 'msg' => 'Error al listar');
         try {
             $num_doc = $this->__get('num_doc');
-            $sql = 'SELECT * FROM comprobantes WHERE num_doc = ? ORDER BY fecha DESC';
+            $sql = 'SELECT * FROM comprobantes WHERE num_doc = ? ORDER BY fecha DESC LIMIT 30';
             $mysqli = Conexion::abrir();
             $stmt = $mysqli->prepare($sql);
             if ($stmt !== FALSE) {

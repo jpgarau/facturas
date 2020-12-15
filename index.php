@@ -2,6 +2,7 @@
 
 use controlador\ClienteC\ClienteC;
 use controlador\ComprobantesC\ComprobantesC;
+use controlador\PresupuestosC\PresupuestosC;
 use modelo\Cliente\Cliente;
 
 $dir = is_dir('modelo') ? '' : '../';
@@ -9,6 +10,7 @@ $dir = is_dir('modelo') ? '' : '../';
 require_once $dir . 'modelo/validar.php';
 require_once $dir . 'vista/header.php';
 require_once $dir . 'controlador/ComprobantesC.php';
+require_once $dir . 'controlador/PresupuestosC.php';
 require_once $dir . 'controlador/ServicioC.php';
 require_once $dir . 'controlador/ClienteC.php';
 
@@ -117,19 +119,50 @@ if (isset($_SESSION['usuario'])) {
     </section>
     <hr>
     <section id="presupuestos">
-      <div class="container">
+        <div class="container">
             <h2 class="text-center titulo">Mis Presupuestos</h2>
-            <div id="tbl_comprobantes" class="table-responsive">
+            <div id="tbl_presupuestos" class="table-responsive">
                 <table class="table table-light table-hover table-sm text-center">
                     <thead class="d-fixed">
                         <th>Fecha</th>
                         <th>Tipo</th>
-                        <th>Nº de Comprobante</th>
+                        <th>Nº de Presupuesto</th>
                         <th>Importe</th>
                         <th>Descargar</th>
                         <th>Estado</th>
                     </thead>
                     <tbody>
+                        <?php
+                            $presupuestosC = new PresupuestosC();
+                            $respuesta = $presupuestosC->listarPresupuestos($_SESSION['userProfile']['num_doc']);
+                            if ($respuesta['exito'] == true) {
+                                if ($respuesta['encontrados'] > 0) {
+                                    $presupuestos = $respuesta[0];
+                                    foreach ($presupuestos as $presupuesto) {
+                                        echo    '</tr>'
+                                            . '<td>'
+                                            . (date("d/m/Y", strtotime($presupuesto['fecha'])))
+                                            . '</td>'
+                                            . '<td>'
+                                            . $presupuesto['tipo_presu']
+                                            . '</td>'
+                                            . '<td>'
+                                            . $presupuesto['presupuesto']
+                                            . '</td>'
+                                            . '<td>'
+                                            . $presupuesto['importe']
+                                            . '</td>'
+                                            . '<td>'
+                                            . '<a href="/facturas/pdf/' . $presupuesto["nombre_pdf"] . '" download><i class="far fa-file-pdf text-danger"></i></a>'
+                                            . '</td>'
+                                            . '<td>'
+                                            . ($presupuesto['estado_presu'] == 1 ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>')
+                                            . '</td>'
+                                            . '</tr>';
+                                    }
+                                }
+                            }
+                        ?>
                     </tbody>
                 </table>
             </div>
