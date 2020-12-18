@@ -98,9 +98,9 @@ if (isset($_SESSION['usuario']) && ($_SESSION['userProfile']['password_request']
                         $servicios = $rs[0];
                         foreach ($servicios as $servicio) {
                             if(in_array($servicio['idservicio'], $arrServicios)){
-                                echo "<div class='servicio align-items-center'><p>".$servicio['descripcion']."</p><p><i class='fas fa-check-circle fa-2x activo'></i></p></div>";
+                                echo "<div class='servicio align-items-center'><p>".$servicio['descripcion']."</p><p><i class='fas fa-check-circle fa-2x activo'></i></p><p></p></div>";
                             }else{
-                                echo "<div class='servicio align-items-center'><p>".$servicio['descripcion']."</p><p><i class='fas fa-check-circle fa-2x'></i></i></p><button type='submit' name='button' class='btn btn-outline-light' value='".$servicio['descripcion']."'>+Info</button></div>";
+                                echo "<div class='servicio align-items-center'><p>".$servicio['descripcion']."</p><p><i class='fas fa-check-circle fa-2x'></i></i></p><p>Contáctanos para más <button type='submit' name='button' class='btn btn-outline-light' value='".$servicio['descripcion']."'>Información</button></p></div>";
                             }
                         }
                     }

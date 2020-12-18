@@ -47,7 +47,7 @@ hr{
 
 #servicios, #comprobantes, #presupuestos{
     padding: 60px 0;
-    height:100vh;
+    min-height: 100vh;
     background-position: center;
     background-repeat: no-repeat; 
     background-size: cover;
@@ -68,7 +68,7 @@ hr{
 }
 .servicio{
     display: grid;
-    grid-template-columns: auto 40px 70px;
+    grid-template-columns: auto 40px; /*70px*/
     width: 100%;
     border-width: 1px;
     border-style: solid;
@@ -83,7 +83,19 @@ hr{
     font-weight: 600;
     border-radius: 5px;
     transition: all ease-in-out 0.5s;
+    height: 80px;
     padding: 5px;
+}
+.servicio p:last-child{
+    transition: all ease-in-out 0.5s;
+    grid-column: span 2;
+    text-align: center;
+    margin-top: 10px;
+    font-size: 0.1rem;
+    /* display: none; */
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
 }
 @media only screen and (min-width: 768px){
     .servicio{
@@ -93,11 +105,10 @@ hr{
         font-size: 1rem;
         letter-spacing: 1px;
         line-height: 1.2rem;
-        padding: 25px;
+        padding: 15px 25px;
         margin: 10px;
         width: 45%;
         border-radius: 10px;
-
     }
 }
 .servicio:hover{
@@ -105,7 +116,16 @@ hr{
     background: -webkit-linear-gradient(bottom right, #ffa600, #000);
     background: -moz-linear-gradient(bottom right, #ffa600, #000);
     background: linear-gradient(to top left, #ffa600, #000);
-    transform: scale(105%);
+    /* transform: scale(105%); */
+    padding: 15px;
+    height: 130px;
+    /* transition: all ease-in-out 0.5s; */
+}
+.servicio:hover p:last-child{
+    font-size: 1rem;
+    /* display: block; */
+    opacity: 1;
+    height: auto;
     transition: all ease-in-out 0.5s;
 }
 .servicio p{
