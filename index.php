@@ -8,16 +8,43 @@ use modelo\Cliente\Cliente;
 $dir = is_dir('modelo') ? '' : '../';
 
 require_once $dir . 'modelo/validar.php';
+if(isset($_SESSION['userProfile'])){
+    if($_SESSION['userProfile']['password_request']==1){
+        header('Location: /facturas/vista/cambia_pass.php');
+        die();
+    }
+}
+
+if(!isset($_SESSION['usuario']) && !isset($_POST['registro']) && !isset($_POST['registrar'])){
+    header('Location: /facturas/vista/login.php');
+    die();
+}
+if(isset($_POST['button'])){
+    require_once $dir . 'funciones/funciones.php';
+    $email = 'desarrollos@agontech.com.ar';
+    $nombre = $_SESSION['userProfile']['nombre'];
+    $requerimiento = $_POST['button'];
+    $asunto = html_entity_decode('Informaci&oacute;n de Producto - Agontech Clientes Web');
+    $cuerpo = "<b>Estimado:</b> <br /><br />El cliente $nombre solicita m&aacute;s informaci&oacute;n sobre el producto: $requerimiento";
+    if(enviarEmail($email, $nombre, $asunto, $cuerpo)){
+        $_SESSION['msg_ok'] = "Se envió la solicitud de más información sobre $requerimiento. En breve recibira una respuesta. Gracias <b>Agontech SAS</b>";
+    }else{
+        $_SESSION['msg_error'] = "Error al enviar Email";
+    }
+    unset($_POST);
+    header('Location: /facturas');
+    exit;
+}
 require_once $dir . 'vista/header.php';
 require_once $dir . 'controlador/ComprobantesC.php';
 require_once $dir . 'controlador/PresupuestosC.php';
 require_once $dir . 'controlador/ServicioC.php';
 require_once $dir . 'controlador/ClienteC.php';
 
-if (isset($_SESSION['usuario'])) {
+if (isset($_SESSION['usuario']) && ($_SESSION['userProfile']['password_request'])<1) {
 ?>
     <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#"><i style="font-family: 'Poppins', sans-serif; font-weight: bold;">Clientes</i></a>
+        <a class="navbar-brand" href="#"><img src="/facturas/img/logo.png" alt="Logo Agontech"></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -38,6 +65,21 @@ if (isset($_SESSION['usuario'])) {
     <section id="servicios">
         <div class="container">
             <h2 class="text-center titulo">Servicios</h2>
+            <form action="" method="POST">
+                <?php
+                    if(isset($_SESSION['msg_ok'])){
+                        echo '<div class="alert alert-success" role="alert"><h4 class="alert-heading">Solicitud Enviada!</h4><button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button><p>'.$_SESSION['msg_ok'].'</p></div>';
+                      unset($_SESSION['msg_ok']);
+                    }
+                    if(isset($_SESSION['msg_error'])){
+                        echo '<div class="alert alert-danger" role="alert"><h4 class="alert-heading">Error</h4><button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button><p>'.$_SESSION['msg_error'].'</p></div>';
+                      unset($_SESSION['msg_error']);
+                    }
+                ?>
             <div id="listaservicios" class="d-flex justify-content-center align-items-center">
                 <?php
                     $num_doc = $_SESSION['userProfile']['num_doc'];
@@ -56,17 +98,18 @@ if (isset($_SESSION['usuario'])) {
                         $servicios = $rs[0];
                         foreach ($servicios as $servicio) {
                             if(in_array($servicio['idservicio'], $arrServicios)){
-                                echo "<div class='servicio d-flex justify-content-between'><p>".$servicio['descripcion']."</p><p><i class='fas fa-check-circle fa-2x activo'></i></p></div>";
+                                echo "<div class='servicio align-items-center'><p>".$servicio['descripcion']."</p><p><i class='fas fa-check-circle fa-2x activo'></i></p></div>";
                             }else{
-                                echo "<div class='servicio d-flex justify-content-between'><p>".$servicio['descripcion']."</p><p><i class='fas fa-times-circle fa-2x'></i></i></p></div>";
+                                echo "<div class='servicio align-items-center'><p>".$servicio['descripcion']."</p><p><i class='fas fa-check-circle fa-2x'></i></i></p><button type='submit' name='button' class='btn btn-outline-light' value='".$servicio['descripcion']."'>+Info</button></div>";
                             }
                         }
                     }
                 ?>
             </div>
+        </form>
         </div>
     </section>
-    <hr>
+    <!-- <hr> -->
     <section id="comprobantes">
         <div class="container">
             <h2 class="text-center titulo">Mis Comprobantes</h2>
@@ -117,7 +160,7 @@ if (isset($_SESSION['usuario'])) {
             </div>
         </div>
     </section>
-    <hr>
+    <!-- <hr> -->
     <section id="presupuestos">
         <div class="container">
             <h2 class="text-center titulo">Mis Presupuestos</h2>

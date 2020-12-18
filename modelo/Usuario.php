@@ -62,7 +62,7 @@ class Usuario
         if ($name === 'last_session' || $name === 'token_password') {
             $value = trim($value);
             $value = filter_var($value, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            if ($value === FALSE) $value = null;
+            if ($value === FALSE || $value === '') $value = null;
         }
         if ($name === 'password_request') {
             $value = filter_var($value, FILTER_VALIDATE_INT);
@@ -142,17 +142,43 @@ class Usuario
             $id = $this->__get('id');
             $password = $this->__get('password');
             $token_password = $this->__get('token_password');
-            $sql = 'UPDATE usuarios SET password = ?, token_password="", password_request=0 WHERE id = ? AND token_password = ?';
+            $correo = $this->__get('correo');
+            $sql = 'UPDATE usuarios SET password = ?, correo=?, token_password="", password_request=0 WHERE id = ? AND token_password = ?';
             $mysqli = Conexion::abrir();
             $stmt = $mysqli->prepare($sql);
             if ($stmt !== FALSE) {
-                $stmt->bind_param('sis', $password, $id, $token_password);
+                $stmt->bind_param('ssis', $password, $correo, $id, $token_password);
                 $stmt->execute();
                 $resultado = $mysqli->affected_rows;
                 $stmt->close();
                 $mysqli->close();
                 if ($resultado > 0) {
                     $arr = array('exito' => true, 'msg' => '');
+                }
+            }
+        } catch (\Exception $e) {
+            $arr['msg'] = $e->getMessage();
+        }
+        return $arr;
+    }
+
+    public function buscar(){
+        $arr = array('exito'=>false, 'msg'=>'Error en la busqueda');
+        try {
+            $id = $this->__get('id');
+            $sql = 'SELECT  num_doc, nombre, correo, last_session, activacion, token, token_password, password_request, perfilid FROM usuarios WHERE id=? AND activacion=1 LIMIT 1';
+            $mysqli = Conexion::abrir();
+            $stmt = $mysqli->prepare($sql);
+            if($stmt!==FALSE){
+                $stmt->bind_param('i', $id);
+                $stmt->execute();
+                $rs = $stmt->get_result();
+                $encontrado = $rs->num_rows;
+                $stmt->close();
+                $mysqli->close();
+                if($encontrado==1){
+                    $usuario = $rs->fetch_assoc();
+                    $arr = array('exito'=>true, 'msg'=>'', $usuario);
                 }
             }
         } catch (\Exception $e) {

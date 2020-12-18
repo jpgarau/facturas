@@ -24,13 +24,21 @@ class UsuarioC
         return $ret;
     }
 
-    public function cambioPass($password, $id, $token_password){
+    public function cambioPass($password, $correo, $id, $token_password){
         $ret = false;
         $ousuario = new Usuario();
         $ousuario->__set('id',$id);
+        $ousuario->__set('correo', $correo);
         $ousuario->__set('password', $password);
         $ousuario->__set('token_password', $token_password);
         $ret = $ousuario->cambiarPass();
         return $ret;
+    }
+
+    public function buscarUsuario($id){
+        $usuario = new Usuario();
+        $usuario->__set('id',$id);
+        $retorno = $usuario->buscar();
+        return $retorno;
     }
 }

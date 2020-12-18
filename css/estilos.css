@@ -17,13 +17,26 @@ hr{
     /* background-color: rgba(229, 255, 0, 0.781); */
 }
 .login{
-    background-image: url('../img/login.jpg');
+    background-image: url('../img/fondo.jpg');
     height:100vh;
     background-position: center;
     background-repeat: no-repeat; 
     background-size: cover;    
 }
+.logo-img{
+    width: 100%;
+}
+.logo-img img{
+    width: 100%;
+    margin-bottom: 20px;
+}
+.navbar-brand{
+    padding: 0;
+}
+.navbar-brand img{
+    max-height: 40px;
 
+}
 .titulo{
     text-transform: uppercase;
     color: #fff;
@@ -40,10 +53,10 @@ hr{
     background-size: cover;
 }
 #servicios{
-    background-image: url('../img/fondoservicios2.jpg'); 
+    background-image: url('../img/fondoservicios2N.jpg');
 }
 #presupuestos{
-    background-image: url('../img/presupuestos2.jpg'); 
+    background-image: url('../img/presupuestos2N.jpg'); 
 }
 
 #listaservicios{
@@ -54,19 +67,17 @@ hr{
     height: 100%;
 }
 .servicio{
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: grid;
+    grid-template-columns: auto 40px 70px;
     width: 100%;
     border-width: 1px;
     border-style: solid;
-    border-color: #B938CB #080808 #080808 #B938CB;
+    border-color: #ffa600 #000 #000 #ffa600;
     margin: 10px 0;
-    background: #080808;
-    background: -webkit-linear-gradient(bottom right, #080808, #B938CB);
-    background: -moz-linear-gradient(bottom right, #080808, #B938CB);
-    background: linear-gradient(to top left, #080808, #B938CB);
-    box-shadow: 0 5px 10px rgba(100,0,255,0.9);
+    background: #000;
+    background: -webkit-linear-gradient(bottom right,#000,  #ffa600);
+    background: -moz-linear-gradient(bottom right, #000,  #ffa600);
+    background: linear-gradient(to top left, #000, #ffa600);
     opacity: 0.95;
     color: #fff;
     font-weight: 600;
@@ -78,33 +89,22 @@ hr{
     .servicio{
         border-width: 1px;
         border-style: solid;
-        border-color: #B938CB #080808 #080808 #B938CB;
-        font-size: 1.2rem;
+        border-color: #ffa600 #000 #000 #ffa600;
+        font-size: 1rem;
         letter-spacing: 1px;
         line-height: 1.2rem;
-        /* display: flex;
-        justify-content: center;
-        align-items: center; */
-        /* background: #080808;
-        background: -webkit-linear-gradient(bottom right, #080808, #B938CB);
-        background: -moz-linear-gradient(bottom right, #080808, #B938CB);
-        background: linear-gradient(to top left, #080808, #B938CB); */
-        /* font-weight: 600; */
-        /* color: #fff; */
         padding: 25px;
         margin: 10px;
         width: 45%;
         border-radius: 10px;
-        box-shadow: 0 5px 20px rgba(100,0,255,0.9);
-        /* opacity: 0.95; */
-        /* transition: all ease-in-out 0.5s; */
+
     }
 }
 .servicio:hover{
-    background: #080808;
-    background: -webkit-linear-gradient(bottom right, #B938CB, #080808);
-    background: -moz-linear-gradient(bottom right, #B938CB, #080808);
-    background: linear-gradient(to top left, #B938CB, #080808);
+    background: #000;
+    background: -webkit-linear-gradient(bottom right, #ffa600, #000);
+    background: -moz-linear-gradient(bottom right, #ffa600, #000);
+    background: linear-gradient(to top left, #ffa600, #000);
     transform: scale(105%);
     transition: all ease-in-out 0.5s;
 }
@@ -112,19 +112,25 @@ hr{
     margin: 0;
 }
 .servicio p i{
-    color: #000;
-    background-color: rgb(255, 0, 0);
+    color: #f7d495;
+    background-color: rgba(255, 255, 255, 0.877);
     border-radius: 50%;
-    text-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
+    text-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
 }
 .servicio p i.activo{
-    color: #000;
-    background-color: rgb(0, 255, 0);
+    color: #f7d495;
+    background-color: green;
     border-radius: 50%;
-    text-shadow: 0 0 15px rgba(0, 255, 0, 0.8);
+    text-shadow: 0 0 15px rgba(115, 255, 0, 0.8);
+}
+.servicio button:hover{
+    background-color: orange;
+    color: #fff;
+    font-weight: bold;
+    border-color: orange;
 }
 #comprobantes{
-    background-image: url('../img/fondo7.jpg');
+    background: linear-gradient(225deg, #ffa600, #f7d495);;
 }
 
 @media only screen and (min-width: 768px){

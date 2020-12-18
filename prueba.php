@@ -1,13 +1,15 @@
 <?php
 
+use modelo\Conexion\Conexion;
 use modelo\ConexionWeb\ConexionWeb;
 
 include_once "modelo/ConexionWeb.php";
+include_once "modelo/Conexion.php";
+
 try {
     $mysqli = ConexionWeb::abrir();
-    $sql = 'SELECT servicios.idservicio FROM servicios RIGHT JOIN detservicios ON servicios.idservicio = detservicios.idservicio LEFT JOIN clientes ON detservicios.idcliente = clientes.idcliente WHERE replace(clientes.cuit,"-","") = 30707940081 or clientes.nrodoc = 30707940081 order by servicios.idservicio';
+    $sql = 'SELECT DISTINCT detservicios.idcliente, clientes.cuit, clientes.email, clientes.razonsocial FROM detservicios JOIN clientes ON detservicios.idcliente = clientes.idcliente ORDER BY idcliente';
     $stmt = $mysqli->prepare($sql);
-    $rs = $stmt;
     if($stmt!==FALSE){
         $stmt->execute();
         $res = $stmt->get_result();
@@ -17,7 +19,32 @@ try {
     }
         
 } catch (\exception $e) {
-    $rs = $e->getMessage();
+    $error = $e->getMessage();
+}
+try{
+    $mysqli = Conexion::abrir();
+    $sql = "INSERT INTO usuarios(num_doc, password, nombre, correo, activacion, token, token_password, password_request, perfilid) VALUES (?,?,?,?,?,?,?,?,?)";
+    $stmt = $mysqli->prepare($sql);
+    $procesados = 0;
+    foreach ($rs as $cliente) {
+        $num_doc            = filter_var(str_replace('-', '', $cliente['cuit']), FILTER_VALIDATE_INT);
+        $password           = password_hash(filter_var(str_replace('-', '', $cliente['cuit']), FILTER_VALIDATE_INT), PASSWORD_DEFAULT);
+        $nombre             = $cliente['razonsocial'];
+        $correos            = explode(';', $cliente['email']);
+        $correo             = filter_var(trim($correos[0]), FILTER_VALIDATE_EMAIL);
+        $activacion         = 1;
+        $token              = "";
+        $token_password     = filter_var(str_replace('-', '', $cliente['cuit']), FILTER_VALIDATE_INT);
+        $password_request   = 1;
+        $perfilid           = 2;
+        $stmt->bind_param('isssissii', $num_doc, $password, $nombre, $correo, $activacion, $token, $token_password, $password_request, $perfilid);
+        $stmt->execute();
+        $procesados ++;
+    }
+    $stmt->close();
+    $mysqli->close();
+}catch(\Exception $e){
+    $procesados = $e->getMessage();
 }
 
 ?>
@@ -32,7 +59,7 @@ try {
 </head>
 <body>
     <pre>
-        <?php var_dump($rs);?>
+        <?php echo $procesados;?>
     </pre>
 </body>
 </html>

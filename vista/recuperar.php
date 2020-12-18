@@ -52,7 +52,7 @@ if(!empty($_POST)){
 		
 	</head>
 	
-	<body style="width: 100%; height:100vh; background-image:url(../img/login.jpg); background-size:cover; background-repeat:no-repeat;">
+	<body style="width: 100%; height:100vh; background-image:url(../img/fondo.jpg); background-size:cover; background-repeat:no-repeat;">
 		
 		<div class="container d-flex h-100 justify-content-center align-items-center">    
 			<div class="">                    
@@ -82,7 +82,7 @@ if(!empty($_POST)){
 					</div>
                     <div class="card-footer">
                         <div class="">
-                            <small><i>No tiene una cuenta! <a href="/facturas/index.php?registro" class="text-decoration-none">Registrate aquí</a></i></small>
+                            <small><i>No tiene una cuenta! <a href="/facturas/vista/registro.php" class="text-decoration-none">Registrate aquí</a></i></small>
                         </div>
                     </div>
 				</div>

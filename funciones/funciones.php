@@ -48,6 +48,7 @@ require_once $dir.'modelo/Conexion.php';
 		require_once $dir.'PHPMailer/PHPMailerAutoload.php';
 		
 		$mail = new PHPMailer();
+		$mail->CharSet = 'UTF-8';
 		$mail->isSMTP();
 		$mail->SMTPAuth = true;
 		$mail->SMTPSecure = 'tls'; //Modificar 'tipo de seguridad' tls
