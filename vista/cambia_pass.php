@@ -61,7 +61,7 @@ if (!empty($_POST)) {
 		if (!is_bool($rs)) {
 			if ($rs['exito']) {
 				echo "<b>Password modificado</b>";
-				echo "<br /><a href='/facturas/vistas/logout.php'>Iniciar Session</a>";
+				echo "<br /><a href='/facturas/vista/logout.php'>Iniciar Session</a>";
 				exit;
 			} else {
 				$errors[] = "Error al modificar el Password";

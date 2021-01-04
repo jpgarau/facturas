@@ -54,6 +54,7 @@ if (isset($_SESSION['usuario']) && ($_SESSION['userProfile']['password_request']
                 <li class="nav-item"><a class="nav-link" href="#comprobantes">Mis Comprobantes</a></li>
                 <li class="nav-item"><a class="nav-link" href="#presupuestos">Mis Presupuestos</a></li>
                 <!-- <li class="nav-item"><a class="nav-link" href="#ctacte">Mi Estado</a></li> -->
+                <li class="nav-item"><a class="nav-link" href="#tickets">Mis Tickets</a></li>
             </ul>
             <div class="d-flex h-100 justify-content-center align-items-center mx-2">
                 <p class="text-white p-0 m-0"><i class="fas fa-user"></i> <?php echo $_SESSION['usuario']; ?></p>
@@ -214,11 +215,78 @@ if (isset($_SESSION['usuario']) && ($_SESSION['userProfile']['password_request']
     <!-- <section id="ctacte">
 
     </section> -->
+    <section id="tickets">
+        <!-- Modal -->
+        <div class="modal fade" id="modal_tickets" tabindex="-1" role="dialog" aria-labelledby="Tickets" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Nuevo ticket</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-row">
+                        <label for="descripcion">Descripci&oacute;n</label>
+                        <textarea class="form-control" cols="100" rows="4" maxlength="500" name="descripcion" id="descripcion" placeholder="Indicar Pantalla/Opcion del Menu. Descripción detallada del requerimiento" title="Ingrese la descripción del tickets"></textarea>
+                        <div class="invalid-feedback">
+                            <strong>* Este campo no debe estar vacio.</strong>
+                        </div>
+                        </div>
+                    </div>
+                <div class="modal-footer">
+                    <button type="button" id="guardar" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="container">
+            <h2 class="text-center titulo">Mis Tickets</h2>
+            <div id="botonera">
+                <button id="cambiarPrioridad" class="btn btn-info mb-2"><i class="fas fa-sort-numeric-up"></i> Establecer Prioridad</button>
+                <button id="nuevoTicket" class="btn btn-success mb-2 float-right" data-toggle="modal" data-target="#modal_tickets">Nuevo Ticket</button>
+            </div>
+            <div class="tabla">
+                <div id="tbl_tickets_pendientes" class="table-responsive">
+                    <table class="table table-light table-striped table-hover table-sm">
+                        <thead class="d-fixed text-center">
+                            <th>Fecha</th>
+                            <th>#Orden</th>
+                            <th>Descripcion</th>
+                            <th>Estimada</th>
+                            <th>Estado</th>
+                            <th><i class="fas fa-edit"></i></th>
+                            <th><i class="fas fa-trash-alt"></i></th>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <p><small><i class="fas fa-sort-numeric-up"></i> <i>El orden de prioridad se determina de arriba hacia abajo, siendo el primero el de mayor prioridad.</i></small></p>
+            </div>
+            <div class="tabla">
+                <div id="tbl_tickets_encurso" class="table-responsive">
+                    <table class="table table-light table-striped table-hover table-sm">
+                        <thead class="d-fixed text-center">
+                            <th>Fecha</th>
+                            <th>#Orden</th>
+                            <th>Descripcion</th>
+                            <th>Estimada</th>
+                            <th>Estado</th>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="js/main.js"></script>
 <?php
     require_once 'vista/footer.php';
 }
 ?>
-
 </body>
 
 </html>

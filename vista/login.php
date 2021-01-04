@@ -55,10 +55,6 @@ if (!isset($_SESSION['usuario']) || ($_SESSION['userProfile']['password_request'
                     <div class="logo-img">
                         <img src="/facturas/img/logo.png" alt="Logo agontech">
                     </div>
-                <!-- <span class="fa-stack fa-4x">
-                    <i class="fas fa-circle fa-stack-2x fa-inverse"></i>
-                    <i class="fas fa-user fa-stack-1x text-primary"></i>
-                </span> -->
                 <h3 class="h3 text-white font-weight-bold">Iniciar Sesión</h3>
                 </div>
                 <div class="card-body">
