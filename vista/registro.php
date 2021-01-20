@@ -74,12 +74,12 @@ if(!empty($_POST)){
                     $token = generateToken();
                     $registro = registraUsuario($numDoc, $pass_hash, $nombre, $email, $activo, $token, $perfilid);
                     if ($registro > 0) {
-                        $url = 'http://'.$_SERVER['SERVER_NAME'].'/facturas/vista/activar.php?id='.$registro.'&val='.$token;
+                        $url = 'http://'.$_SERVER['SERVER_NAME'].'/webagon3/clientes/vista/activar.php?id='.$registro.'&val='.$token;
                         $asunto = 'Activar Cuenta - Agontech Clientes Web';
                         $cuerpo = "<b>Estimado $nombre:</b> <br /><br />Para continuar con el proceso de registro, es indispensable de click en el siguiente link <b><a href='$url'>Activar Cuenta</a></b>";
                         if(enviarEmail($email, $nombre, $asunto, $cuerpo)){
                             echo "Para terminar el proceso de registro siga las intrucciones que le hemos enviado a la dirección de correo electronico: $email";
-                            echo "<br><a href='/facturas'>Iniciar Session</a>";
+                            echo "<br><a href='/webagon3/clientes'>Iniciar Session</a>";
                             exit;
                         }else{
                             $errors[] = "Error al enviar Email";
@@ -133,7 +133,7 @@ require_once 'header.php';
                         </div>
                         <?php echo resultBlock($errors); ?>
                         <div class="d-flex justify-content-between">
-                                <a href="/facturas" class="btn btn-danger">Cancelar</a>
+                                <a href="/webagon3/clientes" class="btn btn-danger">Cancelar</a>
                                 <button type="submit" name="registrar" id="registrar" class="btn btn-primary" onclick="cargando();">Registrarme</button>
                         </div>
                     </form>

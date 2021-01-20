@@ -12,6 +12,7 @@ require_once 'ConexionWeb.php';
 class Requerimiento
 {
     private $id_requerimiento;
+    private $uuid;
     private $Idorden;
     private $fecha;
     private $nro_doc;
@@ -26,6 +27,7 @@ class Requerimiento
         $driver = new mysqli_driver();
         $driver->report_mode = MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT;
         $this->id_requerimiento = 0;
+        $this->uuid = NULL;
         $this->Idorden = 0;
         $this->fecha = "";
         $this->nro_doc = 0;
@@ -43,7 +45,7 @@ class Requerimiento
 
     public function __set($name, $value)
     {
-        if ($name === 'Idorden' || $name === 'nro_doc' || $name === 'idcliente' || $name === 'prioridad' || $name === 'estado') {
+        if ($name === 'nro_doc' || $name === 'idcliente' || $name === 'prioridad' || $name === 'estado') {
             $value = filter_var($value, FILTER_VALIDATE_INT);
             if ($value === FALSE) $value = 0;
         }
@@ -63,15 +65,15 @@ class Requerimiento
             $pendientes2 = array();
             $pendientes3 = array();
             $nro_doc = $this->__get('nro_doc');
-            $sql = 'SELECT * FROM requerimientos WHERE nro_doc = ?'; 
+            $sql = 'SELECT * FROM requerimientos WHERE nro_doc = ?';
             $mysqli = Conexion::abrir();
             $stmt = $mysqli->prepare($sql);
-            if($stmt !==false){
+            if ($stmt !== false) {
                 $stmt->bind_param('i', $nro_doc);
                 $stmt->execute();
                 $res = $stmt->get_result();
                 $encontrados = $res->num_rows;
-                if($encontrados > 0){
+                if ($encontrados > 0) {
                     $pendientes = $res->fetch_all(MYSQLI_ASSOC);
                 }
                 $sql2 = 'SELECT ordenes.Idorden, ordenes.estado, ordenes.idcliente, clientes.razonsocial, ordenes.fecha, ordenes.requerimiento, ordenes.fechaprometido FROM ordenes JOIN clientes ON ordenes.idcliente = clientes.idcliente WHERE ordenes.idcomponente=20 AND (ordenes.estado=1 OR ordenes.estado=0 OR ordenes.estado=9) AND replace(clientes.cuit,"-","") = ?';
@@ -92,25 +94,24 @@ class Requerimiento
                 foreach ($pendientes2 as $pendiente) {
                     $existe = false;
                     foreach ($pendientes as $pend) {
-                        if(in_array($pendiente['Idorden'],$pend)){
+                        if (in_array($pendiente['Idorden'], $pend)) {
                             $existe = true;
                         }
                     }
-                    if(!$existe){
-                        $pendiente["prioridad"]=0;
+                    if (!$existe) {
+                        $pendiente["prioridad"] = 0;
                         array_push($pendientes3, $pendiente);
                     }
                 }
                 foreach ($pendientes3 as $pendiente => $vpendiente) {
-                    if($vpendiente['estado']===9){
+                    if ($vpendiente['estado'] === 9) {
                         unset($pendientes3[$pendiente]);
                     }
                 }
                 $prioridad = array_column($pendientes3, 'prioridad');
-                $prioridadA = $prioridad;
                 array_multisort($prioridad, SORT_ASC, $pendientes3);
                 $encontrados = count($pendientes3);
-                $arr = array('exito'=>true, 'msg'=>'', 'encontrados'=>$encontrados, $pendientes3);
+                $arr = array('exito' => true, 'msg' => '', 'encontrados' => $encontrados, $pendientes3);
             }
         } catch (\Exception $e) {
             $arr['msg'] = $e->getMessage();
@@ -163,8 +164,10 @@ class Requerimiento
                 $stmt->execute();
                 $stmt->close();
                 $id_requerimiento = $mysqli->insert_id;
+                $mysqli->real_query("SELECT uuid FROM requerimientos WHERE id_requerimiento = $id_requerimiento");
+                $uuid = $mysqli->use_result()->fetch_assoc()['uuid'];
                 $mysqli->close();
-                $arr = array('exito' => true, 'msg' => '', 'id_requerimiento'=>$id_requerimiento);
+                $arr = array('exito' => true, 'msg' => '', 'id_requerimiento' => $id_requerimiento, 'uuid' => $uuid);
             }
         } catch (\Exception $e) {
             $arr['msg'] = $e->getMessage();
@@ -179,18 +182,18 @@ class Requerimiento
             $Idorden = $this->__get('Idorden');
             $nro_doc = $this->__get('nro_doc');
             $requerimiento = $this->__get('requerimiento');
-            $sql = 'UPDATE requerimientos SET requerimiento=? WHERE (requerimientos.Idorden=? OR requerimientos.id_requerimiento=?) AND requerimientos.nro_doc = ?';
+            $sql = 'UPDATE requerimientos SET requerimiento=? WHERE (requerimientos.Idorden=? OR requerimientos.uuid=?) AND requerimientos.nro_doc = ?';
             $mysqli = Conexion::abrir();
             $stmt = $mysqli->prepare($sql);
             if ($stmt !== FALSE) {
-                $stmt->bind_param('siii', $requerimiento, $Idorden, $Idorden, $nro_doc);
+                $stmt->bind_param('sisi', $requerimiento, $Idorden, $Idorden, $nro_doc);
                 $stmt->execute();
                 $actualizados = $stmt->affected_rows;
                 $stmt->close();
                 $mysqli->close();
-                if($actualizados>0){
+                if ($actualizados > 0) {
                     $arr = array('exito' => true, 'msg' => '');
-                }else{
+                } else {
                     $arr['msg'] = $actualizados;
                 }
             }
@@ -200,25 +203,26 @@ class Requerimiento
         return $arr;
     }
 
-    public function cancelar(){
+    public function cancelar()
+    {
         $arr = array('exito' => false, 'msg' => 'Error al cancelar');
         try {
             $Idorden = $this->__get('Idorden');
             $nro_doc = $this->__get('nro_doc');
             $estado = 9;
-            $sql = 'UPDATE requerimientos SET estado=? WHERE (requerimientos.Idorden=? OR requerimientos.id_requerimiento=?) AND requerimientos.nro_doc = ?';
+            $sql = 'UPDATE requerimientos SET estado=? WHERE (requerimientos.Idorden=? OR requerimientos.uuid=?) AND requerimientos.nro_doc = ?';
             $mysqli = Conexion::abrir();
             $stmt = $mysqli->prepare($sql);
             if ($stmt !== FALSE) {
-                $stmt->bind_param('iiii', $estado, $Idorden, $Idorden, $nro_doc);
+                $stmt->bind_param('iisi', $estado, $Idorden, $Idorden, $nro_doc);
                 $stmt->execute();
                 $actualizados = $mysqli->affected_rows;
                 $stmt->close();
                 $mysqli->close();
-                if($actualizados>0){
+                if ($actualizados > 0) {
                     $arr = array('exito' => true, 'msg' => '');
-                }else{
-                    $arr['msg'] = $actualizados."-".$Idorden."-".$nro_doc;
+                } else {
+                    $arr['msg'] = $actualizados . "-" . $Idorden . "-" . $nro_doc;
                 }
             }
         } catch (\Exception $e) {
@@ -226,12 +230,13 @@ class Requerimiento
         }
         return $arr;
     }
-    function verificarRequerimiento(){
+    function verificarRequerimiento()
+    {
         $arr = array('exito' => false, 'msg' => 'Error al verificar');
         try {
             $Idorden = $this->__get('Idorden');
             $nro_doc = $this->__get('nro_doc');
-            $sql = 'SELECT * FROM requerimientos WHERE (requerimientos.Idorden=? OR requerimientos.id_requerimiento=?) AND requerimientos.nro_doc = ?';
+            $sql = 'SELECT * FROM requerimientos WHERE (requerimientos.Idorden=? OR requerimientos.uuid=?) AND requerimientos.nro_doc = ?';
             $mysqli = Conexion::abrir();
             $stmt = $mysqli->prepare($sql);
             if ($stmt !== FALSE) {
@@ -241,11 +246,11 @@ class Requerimiento
                 $encontrados = $res->num_rows;
                 $stmt->close();
                 $mysqli->close();
-                if($encontrados>0){
+                if ($encontrados > 0) {
                     $requerimiento = $res->fetch_assoc();
                     $arr = array('exito' => true, 'msg' => '', 'encontrados' => $encontrados, $requerimiento);
-                }else{
-                    $arr = array('exito' => true, 'msg' => '', 'encontrados' => $encontrados);
+                } else {
+                    $arr = array('exito' => true, 'msg' => '', 'encontrados' => $encontrados, 'orden' => $Idorden);
                 }
             }
         } catch (\Exception $e) {
@@ -253,7 +258,8 @@ class Requerimiento
         }
         return $arr;
     }
-    function cargarRequerimiento(){
+    function cargarRequerimiento()
+    {
         $arr = array('exito' => false, 'msg' => 'Error al cargar requerimiento');
         try {
             $Idorden = $this->__get('Idorden');
@@ -268,24 +274,24 @@ class Requerimiento
                 $encontrados = $res->num_rows;
                 $stmt->close();
                 $mysqli->close();
-                if($encontrados>0){
+                if ($encontrados > 0) {
                     $requerimiento = $res->fetch_assoc();
                     $sql2 = 'INSERT INTO requerimientos (Idorden, fecha, nro_doc, idcliente, requerimiento, fechaprometido, estado) VALUES(?,?,?,?,?,?,?)';
                     $mysqli2 = Conexion::abrir();
                     $stmt2 = $mysqli2->prepare($sql2);
-                    if($stmt2 !== FALSE){
+                    if ($stmt2 !== FALSE) {
                         $stmt2->bind_param('isiissi', $requerimiento['Idorden'], $requerimiento['fecha'], $nro_doc, $requerimiento['idcliente'], $requerimiento['requerimiento'], $requerimiento['fechaprometido'], $requerimiento['estado']);
                         $stmt2->execute();
                         $insertado = $stmt2->affected_rows;
                         $stmt2->close();
                         $mysqli2->close();
-                        if($insertado>0){
+                        if ($insertado > 0) {
                             $arr = array('exito' => true, 'msg' => '');
-                        }else{
-                            $arr['msg'] = 'Insertados: '.$insertado;
+                        } else {
+                            $arr['msg'] = 'Insertados: ' . $insertado;
                         }
                     }
-                }else{
+                } else {
                     $arr['msg'] = 'Encontrados: ' . $encontrados;
                 }
             }
@@ -294,7 +300,8 @@ class Requerimiento
         }
         return $arr;
     }
-    public function traerRequerimiento(){
+    public function traerRequerimiento()
+    {
         $arr = array('exito' => false, 'msg' => 'Error al cargar requerimiento');
         try {
             $Idorden = $this->__get('Idorden');
@@ -309,19 +316,20 @@ class Requerimiento
                 $encontrados = $res->num_rows;
                 $stmt->close();
                 $mysqli->close();
-                if($encontrados>0){
+                if ($encontrados > 0) {
                     $requerimiento = $res->fetch_assoc();
-                    $arr = array('exito'=>true, 'msg'=>'', 'encontrados'=>$encontrados, $requerimiento);
-                }else{
-                    $arr = array('exito'=>true, 'msg'=>'', 'encontrados'=>$encontrados, 'Idorden'=>$Idorden);
+                    $arr = array('exito' => true, 'msg' => '', 'encontrados' => $encontrados, $requerimiento);
+                } else {
+                    $arr = array('exito' => true, 'msg' => '', 'encontrados' => $encontrados, 'Idorden' => $Idorden);
                 }
             }
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             $arr['msg'] = $e->getMessage();
         }
         return $arr;
     }
-    public function actualizarPrioridad(){
+    public function actualizarPrioridad()
+    {
         $arr = array('exito' => false, 'msg' => 'Error al actualizar la prioridad');
         try {
             $Idorden = $this->__get('Idorden');
@@ -336,10 +344,10 @@ class Requerimiento
                 $actualizados = $stmt->affected_rows;
                 $stmt->close();
                 $mysqli->close();
-                if($actualizados>0){
+                if ($actualizados > 0) {
                     $arr = array('exito' => true, 'msg' => '');
-                }else{
-                    $arr['msg'] = $actualizados . " - ". $Idorden;
+                } else {
+                    $arr['msg'] = $actualizados . " - " . $Idorden;
                 }
             }
         } catch (\Exception $e) {
@@ -352,18 +360,18 @@ class Requerimiento
     {
         $arr = array('exito' => false, 'msg' => 'Error al listar');
         try {
-            $sql = 'SELECT * FROM requerimientos ORDER BY nro_doc'; 
+            $sql = 'SELECT * FROM requerimientos ORDER BY nro_doc';
             $mysqli = Conexion::abrir();
             $stmt = $mysqli->prepare($sql);
-            if($stmt !==false){
+            if ($stmt !== false) {
                 $stmt->execute();
                 $res = $stmt->get_result();
                 $encontrados = $res->num_rows;
-                if($encontrados > 0){
+                if ($encontrados > 0) {
                     $pendientes = $res->fetch_all(MYSQLI_ASSOC);
-                    $arr = array('exito'=>true, 'msg'=>'', 'encontrados'=>$encontrados, $pendientes);
-                }else{
-                    $arr = array('exito'=>true, 'msg'=>'', 'encontrados'=>$encontrados);
+                    $arr = array('exito' => true, 'msg' => '', 'encontrados' => $encontrados, $pendientes);
+                } else {
+                    $arr = array('exito' => true, 'msg' => '', 'encontrados' => $encontrados);
                 }
             }
         } catch (\Exception $e) {
@@ -372,13 +380,14 @@ class Requerimiento
         return $arr;
     }
 
-    public function limpiarRequerimientos(){
+    public function limpiarRequerimientos()
+    {
         $arr = array('exito' => false, 'msg' => 'Error al limpiar la tabla');
         try {
             $sql = 'TRUNCATE TABLE requerimientos';
             $mysqli = Conexion::abrir();
             $stmt = $mysqli->prepare($sql);
-            if($stmt !== FALSE){
+            if ($stmt !== FALSE) {
                 $stmt->execute();
                 $stmt->close();
                 $mysqli->close();

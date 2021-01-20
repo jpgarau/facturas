@@ -33,7 +33,7 @@
                 <h1><?php echo $mensaje; ?></h1>
 				
 				<br />
-				<p><a class="btn btn-primary btn-lg" href="/facturas" role="button">Iniciar Sesi&oacute;n</a></p>
+				<p><a class="btn btn-primary btn-lg" href="/webagon3/clientes" role="button">Iniciar Sesi&oacute;n</a></p>
 			</div>
         </div>
         <script src="../extras/js/jquery-3.5.1.min.js"></script>

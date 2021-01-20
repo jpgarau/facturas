@@ -10,13 +10,13 @@ $dir = is_dir('modelo') ? '' : '../';
 require_once $dir . 'modelo/validar.php';
 if(isset($_SESSION['userProfile'])){
     if($_SESSION['userProfile']['password_request']==1){
-        header('Location: /facturas/vista/cambia_pass.php');
+        header('Location: /webagon3/clientes/vista/cambia_pass.php');
         die();
     }
 }
 
 if(!isset($_SESSION['usuario']) && !isset($_POST['registro']) && !isset($_POST['registrar'])){
-    header('Location: /facturas/vista/login.php');
+    header('Location: /webagon3/clientes/vista/login.php');
     die();
 }
 if(isset($_POST['button'])){
@@ -32,7 +32,7 @@ if(isset($_POST['button'])){
         $_SESSION['msg_error'] = "Error al enviar Email";
     }
     unset($_POST);
-    header('Location: /facturas');
+    header('Location: /webagon3/clientes');
     exit;
 }
 require_once $dir . 'vista/header.php';
@@ -44,7 +44,7 @@ require_once $dir . 'controlador/ClienteC.php';
 if (isset($_SESSION['usuario']) && ($_SESSION['userProfile']['password_request'])<1) {
 ?>
     <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#"><img src="/facturas/img/logo.png" alt="Logo Agontech"></a>
+        <a class="navbar-brand" href="#"><img src="/webagon3/clientes/img/logo.png" alt="Logo Agontech"></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -146,7 +146,7 @@ if (isset($_SESSION['usuario']) && ($_SESSION['userProfile']['password_request']
                                         . $comprobante['importe']
                                         . '</td>'
                                         . '<td>'
-                                        . '<a href="/facturas/pdf/' . $comprobante["nombre_pdf"] . '" download><i class="far fa-file-pdf text-danger"></i></a>'
+                                        . '<a href="/webagon3/clientes/pdf/' . $comprobante["nombre_pdf"] . '" download><i class="far fa-file-pdf text-danger"></i></a>'
                                         . '</td>'
                                         . '<td>'
                                         . ($comprobante['estado_fact'] == 1 ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>')
@@ -197,7 +197,7 @@ if (isset($_SESSION['usuario']) && ($_SESSION['userProfile']['password_request']
                                             . $presupuesto['importe']
                                             . '</td>'
                                             . '<td>'
-                                            . '<a href="/facturas/pdf/' . $presupuesto["nombre_pdf"] . '" download><i class="far fa-file-pdf text-danger"></i></a>'
+                                            . '<a href="/webagon3/clientes/pdf/' . $presupuesto["nombre_pdf"] . '" download><i class="far fa-file-pdf text-danger"></i></a>'
                                             . '</td>'
                                             . '<td>'
                                             . ($presupuesto['estado_presu'] == 1 ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>')

@@ -17,10 +17,10 @@ if(isset($_SESSION['usuario']) && isset($_SESSION['userProfile'])){
 	$token = $_SESSION['userProfile']['token_password'];
 }else{
 	if (empty($_GET['user_id'])) {
-		header('Location: /facturas');
+		header('Location: /webagon3/clientes');
 	}
 	if (empty($_GET['token'])) {
-		header('Location: /facturas');
+		header('Location: /webagon3/clientes');
 	}
 	
 	$user_id = filter_var($_GET['user_id'], FILTER_VALIDATE_INT);
@@ -28,7 +28,7 @@ if(isset($_SESSION['usuario']) && isset($_SESSION['userProfile'])){
 	
 	if (!verificaTokenPass($user_id, $token)) {
 		echo 'No se pudo verificar los Datos';
-		echo "<br /><a href='/facturas'>Iniciar Session</a>";
+		echo "<br /><a href='/webagon3/clientes'>Iniciar Session</a>";
 		exit;
 	}
 
@@ -61,7 +61,7 @@ if (!empty($_POST)) {
 		if (!is_bool($rs)) {
 			if ($rs['exito']) {
 				echo "<b>Password modificado</b>";
-				echo "<br /><a href='/facturas/vista/logout.php'>Iniciar Session</a>";
+				echo "<br /><a href='/webagon3/clientes/vista/logout.php'>Iniciar Session</a>";
 				exit;
 			} else {
 				$errors[] = "Error al modificar el Password";
@@ -96,7 +96,7 @@ if (!empty($_POST)) {
 			<div class="card card-info">
 				<div class="card-header d-flex justify-content-between">
 					<div class="mr-3">Cambiar Password</div>
-					<div><a href="/facturas/vista/logout.php">Iniciar Sesi&oacute;n</a></div>
+					<div><a href="/webagon3/clientes/vista/logout.php">Iniciar Sesi&oacute;n</a></div>
 				</div>
 
 				<div class="card-body">

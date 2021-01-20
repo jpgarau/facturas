@@ -64,6 +64,7 @@ switch ($tarea) {
             }
         }
         $retorno = $oRequerimiento->actualizar();
+        // $retorno = array('exito' =>false, 'idorden'=>$oRequerimiento->__get('Idorden'));
         break;
     case 5:
         $oRequerimiento = new Requerimiento();

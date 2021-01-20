@@ -9,7 +9,7 @@ require_once $dir.'controlador/UsuarioC.php';
 $errors = array();
 
 if(isset($_GET['registro'])){
-    header('Location: /facturas/vista/registro.php');
+    header('Location: /webagon3/clientes/vista/registro.php');
     die();
 }
 
@@ -27,7 +27,7 @@ if(!empty($_POST)){
                     if($ret['encontrado']){
                         $_SESSION['usuario'] = $ret[0]['nombre'];
                         $_SESSION['userProfile'] = $ret[0];
-                        header('Location: /facturas');
+                        header('Location: /webagon3/clientes');
                     }else{
                         $errors[] = $ret['msg'];
                     }
@@ -53,7 +53,7 @@ if (!isset($_SESSION['usuario']) || ($_SESSION['userProfile']['password_request'
             <div class="card col-sm-6 col-md-6 col-lg-3 text-center p-0">
                 <div class="card-header bg-dark ">
                     <div class="logo-img">
-                        <img src="/facturas/img/logo.png" alt="Logo agontech">
+                        <img src="/webagon3/clientes/img/logo.png" alt="Logo agontech">
                     </div>
                 <h3 class="h3 text-white font-weight-bold">Iniciar Sesión</h3>
                 </div>
@@ -61,11 +61,11 @@ if (!isset($_SESSION['usuario']) || ($_SESSION['userProfile']['password_request'
                     <form method="post">
                         <div class="form-group">
                             <label for="txtNumDoc" class="form-label">Nº Documento/CUIT</label>
-                            <input type="text" name="txtNumDoc" id="txtNumDoc" class="form-control">
+                            <input type="text" name="txtNumDoc" id="txtNumDoc" class="form-control" title="Ingrese el número de documento o CUIT en este campo sin guiones o puntos" pattern=".*\d{7,11}" required>
                         </div>
                         <div class="form-group">
                             <label for="txtPassword" class="form-label">Contraseña</label>
-                            <input type="password" name="txtPassword" id="txtPassword" class="form-control">
+                            <input type="password" name="txtPassword" id="txtPassword" class="form-control" title="Ingrese su contraseña" required>
                         </div>
                         <?php echo resultBlock($errors); ?>
                         <div class="form-group d-flex justify-content-center">
@@ -78,7 +78,7 @@ if (!isset($_SESSION['usuario']) || ($_SESSION['userProfile']['password_request'
                         </form>
                     </div>
                     <div>
-                        <a href="/facturas/vista/recuperar.php" class="text-muted text-decoration-none"><small><i>*Olvide mi contraseña</i></small></a>
+                        <a href="/webagon3/clientes/vista/recuperar.php" class="text-muted text-decoration-none"><small><i>*Olvide mi contraseña</i></small></a>
                     </div>
                 </div>
             </div>

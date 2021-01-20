@@ -8,14 +8,14 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 		$("#modal_tickets .modal-body #descripcion").val("");
 	});
 	$("#tbl_tickets_pendientes tbody").on("click", ".editarR", function () {
-		let Idorden = this.parentNode.parentNode.childNodes[1].innerHTML;
+		let Idorden = this.value;
 		let requerimiento = this.parentNode.parentNode.childNodes[2].innerHTML;
 		$("#modal_tickets .modal-title").text("Editar ticket - " + Idorden);
 		$("#modal_tickets .modal-body #descripcion").val(requerimiento);
 		$(modalTicket).modal("show");
 	});
 	$("#tbl_tickets_pendientes tbody").on("click", ".cancelarR", function () {
-		let Idorden = this.parentNode.parentNode.childNodes[1].innerHTML;
+		let Idorden = this.value;
 		let requerimiento = this.parentNode.parentNode.childNodes[2].innerHTML;
 		var trBorrar = this.parentNode.parentNode;
 		alertify.confirm(
@@ -53,9 +53,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 			let Idorden = $("#modal_tickets .modal-title")
 				.text()
 				.replace("Editar ticket - ", "");
-			let tr = $("#tbl_tickets_pendientes tbody").find(
-				":contains(" + Idorden + ")"
-			)[0];
+			let tr = $("#tbl_tickets_pendientes tbody button[value='"+Idorden+"']")[0].parentNode.parentNode;
 			Idorden = Idorden.replace("*","");
 			await actualizarRequerimiento(Idorden, descripcion, tr);
 		}
@@ -110,7 +108,6 @@ function cargarFilaPendiente(objeto) {
 		/([0-9]{4})-([0-9]{2})-([0-9]{2})/,
 		"$3/$2/$1"
 	);
-	let orden = objeto.Idorden===null?"*"+objeto.id_requerimiento:objeto.Idorden;
 	let descripcion = objeto.requerimiento;
 	let estimada = objeto.fechaprometido===null?"":objeto.fechaprometido.replace(
 		/([0-9]{4})-([0-9]{2})-([0-9]{2})/,
@@ -127,7 +124,7 @@ function cargarFilaPendiente(objeto) {
 	tdFecha.innerHTML = fecha;
 	tr.appendChild(tdFecha);
 	let tdOrden = document.createElement("td");
-	tdOrden.innerHTML = orden;
+	tdOrden.innerHTML = objeto.Idorden===null?"":objeto.Idorden;
 	tr.appendChild(tdOrden);
 	let tdDescripcion = document.createElement("td");
 	tdDescripcion.innerHTML = descripcion;
@@ -145,12 +142,14 @@ function cargarFilaPendiente(objeto) {
 	let btnEditar = document.createElement("button");
 	btnEditar.classList.add("btn", "btn-outline-info", "btn-sm", "editarR");
 	btnEditar.innerHTML = '<i class="fas fa-edit"></i>';
+	btnEditar.value = objeto.Idorden===null?objeto.uuid:objeto.Idorden;
 	tdEditar.appendChild(btnEditar);
 	tr.appendChild(tdEditar);
 	let tdCancelar = document.createElement("td");
 	let btnCancelar = document.createElement("button");
 	btnCancelar.classList.add("btn", "btn-outline-danger", "btn-sm", "cancelarR");
 	btnCancelar.innerHTML = '<i class="fas fa-trash-alt"></i>';
+	btnCancelar.value = objeto.Idorden===null?objeto.uuid:objeto.Idorden;
 	tdCancelar.appendChild(btnCancelar);
 	tr.appendChild(tdCancelar);
 	tr.classList.add("ui-sortable-handle");
@@ -167,6 +166,7 @@ function agregarNuevoRequerimiento(nuevoRequerimiento) {
 			dataType: "json",
 			success: function (response) {
 				nuevoRequerimiento.id_requerimiento = response.id_requerimiento;
+				nuevoRequerimiento.uuid = response.uuid;
 				cargarFilaPendiente(nuevoRequerimiento);
 				exito(response.exito);
 			},

@@ -1,4 +1,6 @@
 RewriteEngine On
-Options All -Indexes
-ErrorDocument 404 /facturas/vista/404.html
-ErrorDocument 403 /facturas/vista/404.html
+
+# esta lineas son para quitar la ext .php
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*)$ $1.php

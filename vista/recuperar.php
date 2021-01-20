@@ -21,12 +21,12 @@ if(!empty($_POST)){
 				$nombre = $ret[0]['nombre'];
 				$email = $ret[0]['correo'];
 				$token = generaTokenPass($user_id);
-				$url = 'http://'.$_SERVER["SERVER_NAME"].'/facturas/vista/cambia_pass.php?user_id='.$user_id.'&token='.$token;
+				$url = 'http://'.$_SERVER["SERVER_NAME"].'/webagon3/clientes/vista/cambia_pass.php?user_id='.$user_id.'&token='.$token;
 				$asunto = 'Recuperar Password - Agontech Clientes Web';
 				$cuerpo = "Hola $nombre: <br /><br />Se ha solicitado un reinicio de contrase&ntilde;a <br /><br />Para restaurar la contrase&ntilde;a, visita la siguiente link: <a href='$url'>Cambiar Password</a>";
 				if(enviarEmail($email, $nombre, $asunto, $cuerpo)){
 					echo "Hemos enviado un correo electronico a la direccion $email para restablecer tu password. <br />";
-					echo "<a href='/facturas'>Iniciar Session</a>";
+					echo "<a href='/webagon3/clientes'>Iniciar Session</a>";
 				exit;
 				}else{
 					$errors[] = 'Error al enviar el email';
@@ -59,7 +59,7 @@ if(!empty($_POST)){
 				<div class="card" >
 					<div class="card-header bg-dark d-flex justify-content-between">
 						<div class="mr-3 text-white">Recuperar Password</div>
-						<div><a href="/facturas" class="text-primary text-decoration-none">Iniciar Sesi&oacute;n</a></div>
+						<div><a href="/webagon3/clientes" class="text-primary text-decoration-none">Iniciar Sesi&oacute;n</a></div>
 					</div>     
 					
 					<div class="card-body" >
@@ -82,7 +82,7 @@ if(!empty($_POST)){
 					</div>
                     <div class="card-footer">
                         <div class="">
-                            <small><i>No tiene una cuenta! <a href="/facturas/vista/registro.php" class="text-decoration-none">Registrate aquí</a></i></small>
+                            <small><i>No tiene una cuenta! <a href="/webagon3/clientes/vista/registro.php" class="text-decoration-none">Registrate aquí</a></i></small>
                         </div>
                     </div>
 				</div>

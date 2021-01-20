@@ -1,23 +1,22 @@
 <?php
 
-use modelo\Conexion\Conexion;
-use modelo\ConexionWeb\ConexionWeb;
 use modelo\Requerimiento\Requerimiento;
 
-include_once "modelo/ConexionWeb.php";
-include_once "modelo/Conexion.php";
-include_once "modelo/Requerimiento.php";
+require_once "modelo/Requerimiento.php";
 
-$nro_doc = 23106472769;
-$oRequerimiento = new Requerimiento();
-$oRequerimiento->__set('nro_doc', $nro_doc);
-$retorno = $oRequerimiento->listarPendientes();
+$orequerimiento = new Requerimiento();
 
+$orequerimiento->__set('fecha', '2020-01-18');
+$orequerimiento->__set('nro_doc', 25851212);
+$orequerimiento->__set('requerimiento', 'pruebaaaa');
+$orequerimiento->__set('prioridad', null);
+$orequerimiento->__set('estado', 0);
+
+$retorno = $orequerimiento->agregar();
 ?>
 
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
